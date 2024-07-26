@@ -45,3 +45,18 @@ def delete_tournament(db: Session, tournament_id: int):
         db.rollback()
 
     return tm
+
+
+# Обновление статуса турнира
+def change_tournament_status(db: Session, tournament_id: int, status: bool):
+    tm = db.query(Tournament).filter_by(id=tournament_id).first()
+    tm.status = status
+
+    try:
+        db.add(tm)
+        db.commit()
+        db.refresh(tm)
+    except Exception as e:
+        print(e)
+
+    return tm
