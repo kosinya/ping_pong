@@ -48,9 +48,11 @@ def delete_tournament(db: Session, tournament_id: int):
 
 
 # Обновление статуса турнира
-def change_tournament_status(db: Session, tournament_id: int, status: bool):
+def update_tournament(db: Session, tournament_id: int, data: TournamentDTO):
     tm = db.query(Tournament).filter_by(id=tournament_id).first()
-    tm.status = status
+    tm.name = data.name
+    tm.date = data.date
+    tm.is_completed = data.is_completed
 
     try:
         db.add(tm)
