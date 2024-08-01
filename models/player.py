@@ -9,7 +9,8 @@ class Player(Base):
     surname = Column(String(30), nullable=False)
     name = Column(String(30), nullable=False)
     patronymic = Column(String(30))
-    department = Column(String(200), nullable=False)
+    sex = Column(Integer, nullable=False)
+    department = Column(Integer, nullable=False)
     rating = Column(Integer, default=0, nullable=False)
 
 

@@ -35,15 +35,9 @@ def create_tournament(db: Session, data: TournamentDTO):
 
 # Удалить турнир
 def delete_tournament(db: Session, tournament_id: int):
-    tm = -1
-    try:
-        tm = db.query(Tournament).filter_by(id=tournament_id).delete()
-        db.commit()
-        db.refresh(Tournament)
-    except Exception as e:
-        print(e)
-        db.rollback()
-
+    tm = db.query(Tournament).filter_by(id=tournament_id).delete()
+    db.commit()
+    db.refresh(Tournament)
     return tm
 
 
