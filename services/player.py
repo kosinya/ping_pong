@@ -3,11 +3,6 @@ from models.player import Player
 from dto.player import PlayerDTO
 
 
-# Получить список всех игроков
-def get_all_player(db: Session):
-    return db.query(Player).all()
-
-
 # Получить список всех мужчин
 def get_all_men(db: Session):
     return db.query(Player).filter_by(sex=1).all()
@@ -16,6 +11,10 @@ def get_all_men(db: Session):
 # Получить список всех женщин
 def get_all_women(db: Session):
     return db.query(Player).filter_by(sex=2).all()
+
+
+def get_player_by_id(db: Session, player_id: int):
+    ...
 
 
 # Внести изменения в игрока по id
