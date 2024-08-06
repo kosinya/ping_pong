@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+
 from models.player import Player
 from dto.player import PlayerDTO
 
@@ -53,7 +54,7 @@ def create_new_player(db: Session, data: PlayerDTO):
         name=data.name,
         patronymic=data.patronymic,
         sex=data.sex,
-        department=data.department,
+        department_id=data.department_id,
         rating=data.rating)
 
     try:

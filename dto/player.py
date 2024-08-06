@@ -6,5 +6,5 @@ class PlayerDTO(BaseModel):
     name: str
     patronymic: str
     sex: int
-    department: int
+    department_id: int
     rating: int

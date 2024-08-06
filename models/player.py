@@ -10,7 +10,7 @@ class Player(Base):
     name = Column(String(30), nullable=False)
     patronymic = Column(String(30))
     sex = Column(Integer, nullable=False)
-    department = Column(Integer, nullable=False)
+    department_id = Column(Integer, nullable=False)
     rating = Column(Integer, default=0, nullable=False)
 
 

@@ -9,26 +9,37 @@ from services import player
 router = APIRouter()
 
 
-@router('/men', prefix=['player'])
+# Получить список всех мужчин
+@router.get('/men', tags=['player'])
 async def get_all_men(db: Session = Depends(get_connection)):
     return player.get_all_men(db)
 
 
-@router('/women', prefix=['player'])
+# Получить список всех женшин
+@router.get('/women', tags=['player'])
 async def get_all_women(db: Session = Depends(get_connection)):
     return player.get_all_women(db)
 
 
-@router('/{id}', prefix=['player'])
+# Получить игрока по id
+@router.get('/{id}', tags=['player'])
 async def get_player_by_id(id: str, db: Session = Depends(get_connection)):
     return player.get_player_by_id(db, int(id))
 
 
-@router('/{id}', prefix=['player'])
+# Удалить игрока по id
+@router.delete('/{id}', tags=['player'])
 async def delete_player_by_id(id: str, db: Session = Depends(get_connection)):
     return player.delete_player_by_id(db, int(id))
 
 
-@router('/{id}', prefix=['player'])
+# Обновить игрока по id
+@router.put('/{id}', tags=['player'])
 async def update_player_by_id(id: str, db: Session = Depends(get_connection), data: PlayerDTO = None):
     return player.update_player_by_id(db, int(id), data)
+
+
+# Добавить игрока
+@router.post('/', tags=['player'])
+async def create_player(data: PlayerDTO = None, db: Session = Depends(get_connection)):
+    return player.create_new_player(db, data)

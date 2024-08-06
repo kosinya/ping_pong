@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+
 from dto.tournament import TournamentDTO
 from models.tournament import Tournament
 
