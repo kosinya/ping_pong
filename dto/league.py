@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class PLayerDTO(BaseModel):
+class LeagueDTO(BaseModel):
     name: str
     n_groups: int
     tournament_id: int

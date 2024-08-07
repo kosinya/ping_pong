@@ -22,5 +22,5 @@ async def get_all_departments(db: Session = Depends(get_connection)):
 
 
 @router.delete('/{id}', tags=['department'])
-async def delete_department(id: str = None, db: Session = Depends(get_connection)):
+async def delete_department_by_id(id: str = None, db: Session = Depends(get_connection)):
     return department.delete_department(db, int(id))
