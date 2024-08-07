@@ -11,11 +11,11 @@ def get_all_men(db: Session):
 
 # Получить список всех женщин
 def get_all_women(db: Session):
-    return db.query(Player).filter_by(sex=2).all()
+    return db.query(Player).filter_by(sex=0).all()
 
 
 def get_player_by_id(db: Session, player_id: int):
-    ...
+    return db.query(Player).filter_by(id=player_id).first()
 
 
 # Внести изменения в игрока по id

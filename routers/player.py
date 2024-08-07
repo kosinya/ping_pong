@@ -23,19 +23,19 @@ async def get_all_women(db: Session = Depends(get_connection)):
 
 # Получить игрока по id
 @router.get('/{id}', tags=['player'])
-async def get_player_by_id(id: str, db: Session = Depends(get_connection)):
+async def get_player_by_id(id: str = None, db: Session = Depends(get_connection)):
     return player.get_player_by_id(db, int(id))
 
 
 # Удалить игрока по id
 @router.delete('/{id}', tags=['player'])
-async def delete_player_by_id(id: str, db: Session = Depends(get_connection)):
+async def delete_player_by_id(id: str = None, db: Session = Depends(get_connection)):
     return player.delete_player_by_id(db, int(id))
 
 
 # Обновить игрока по id
 @router.put('/{id}', tags=['player'])
-async def update_player_by_id(id: str, db: Session = Depends(get_connection), data: PlayerDTO = None):
+async def update_player_by_id(id: str = None, db: Session = Depends(get_connection), data: PlayerDTO = None):
     return player.update_player_by_id(db, int(id), data)
 
 
