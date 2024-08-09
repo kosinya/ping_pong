@@ -13,3 +13,5 @@ class League(Base):
     tournament_id = Column(Integer, ForeignKey('tournaments.id'))
 
     tournament = relationship('Tournament', back_populates='league')
+    match = relationship('Match', back_populates='league')
+    group = relationship('Group', back_populates='league')

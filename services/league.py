@@ -35,7 +35,7 @@ def create_league(db: Session, data: LeagueDTO):
 def delete_league_by_id(db: Session, league_id: int):
     db.query(League).filter_by(id=league_id).delete()
     db.commit()
-    db.refresh(League)
+    db.refresh(Leaguqe)
     return league_id
 
 
