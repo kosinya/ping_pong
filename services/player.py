@@ -1,55 +1,51 @@
 from sqlalchemy.orm import Session
 
 from models.player import Player
-from dto.player import PlayerDTO
+from dto import player
 
 
-# Получить список всех мужчин
-def get_all_men(db: Session):
-    return db.query(Player).filter_by(sex=1).all()
+# Получить список всех игроков
+def get_players(db: Session):
+    return db.query(Player).all()
 
 
-# Получить список всех женщин
-def get_all_women(db: Session):
-    return db.query(Player).filter_by(sex=0).all()
-
-
-def get_player_by_id(db: Session, player_id: int):
+# Получить игрока по id
+def get_player(db: Session, player_id: int):
     return db.query(Player).filter_by(id=player_id).first()
 
 
-# Внести изменения в игрока по id
-def update_player_by_id(db: Session, player_id: int, data: PlayerDTO):
-    player = db.query(Player).filter_by(id=player_id).first()
-    player.name = data.name
-    player.surname = data.surname
-    player.patronymic = data.patronymic
-    player.sex = data.sex
-    player.department = data.department
-    player.rating = data.rating
+# Обновить игрока по id
+def update_player(db: Session, player_id: int, data: player.Player):
+    p = db.query(Player).filter_by(id=player_id).first()
+    p.name = data.name
+    p.surname = data.surname
+    p.patronymic = data.patronymic
+    p.sex = data.sex
+    p.department = data.department
+    p.rating = data.rating
 
     try:
-        db.add(player)
+        db.add(p)
         db.commit()
-        db.refresh(player)
+        db.refresh(p)
     except Exception as e:
         db.rollback()
         print(e)
 
-    return player
+    return p
 
 
 # Удалить игрока по id
-def delete_player_by_id(db: Session, player_id: int):
-    player = db.query(Player).filter_by(id=player_id).delete()
+def delete_player(db: Session, player_id: int):
+    p = db.query(Player).filter_by(id=player_id).delete()
     db.commit()
-    db.refresh(player)
-    return player
+    db.refresh(p)
+    return p
 
 
 # Добавить игрока
-def create_new_player(db: Session, data: PlayerDTO):
-    new_player = Player(
+def create_new_player(db: Session, data: player.PlayerCreate):
+    new_p = Player(
         surname=data.surname,
         name=data.name,
         patronymic=data.patronymic,
@@ -58,11 +54,11 @@ def create_new_player(db: Session, data: PlayerDTO):
         rating=data.rating)
 
     try:
-        db.add(new_player)
+        db.add(new_p)
         db.commit()
-        db.refresh(new_player)
+        db.refresh(new_p)
     except Exception as e:
         db.rollback()
         print(e)
 
-    return new_player
+    return new_p

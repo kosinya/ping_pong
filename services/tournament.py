@@ -1,27 +1,25 @@
 from sqlalchemy.orm import Session
 
-from dto.tournament import TournamentDTO
+from dto import tournament
 from models.tournament import Tournament
 
 
 # Получить список всех турниров
-def get_all_tournaments(db: Session):
+def get_tournaments(db: Session):
     return db.query(Tournament).all()
 
 
 # Получить турнир по id
-def get_tournament_by_id(db: Session, tournament_id: int):
+def get_tournament(db: Session, tournament_id: int):
     return db.query(Tournament).filter_by(id=tournament_id).first()
 
 
-# Получить турнир по имени
-def get_tournament_by_name(db: Session, tournament_name: str):
-    return db.query(Tournament).filter_by(name=tournament_name).first()
-
-
 # Создать турнир
-def create_tournament(db: Session, data: TournamentDTO):
-    new_tournament = Tournament(name=data.name)
+def create_tournament(db: Session, data: tournament.TournamentCreate):
+    new_tournament = Tournament(
+        name=data.name,
+        date=data.date,
+        is_completed=data.is_completed)
 
     try:
         db.add(new_tournament)
@@ -43,7 +41,7 @@ def delete_tournament(db: Session, tournament_id: int):
 
 
 # Обновление статуса турнира
-def update_tournament(db: Session, tournament_id: int, data: TournamentDTO):
+def update_tournament(db: Session, tournament_id: int, data: tournament.Tournament):
     tm = db.query(Tournament).filter_by(id=tournament_id).first()
     tm.name = data.name
     tm.date = data.date

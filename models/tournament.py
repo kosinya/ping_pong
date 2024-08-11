@@ -9,7 +9,7 @@ class Tournament(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(200), index=True, nullable=False)
-    date = Column(Date, default=datetime.today(), nullable=False)
+    date = Column(Date, nullable=False)
     is_completed = Column(Boolean, default=False)
 
     league = relationship('League', back_populates='tournament')

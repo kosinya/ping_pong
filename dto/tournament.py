@@ -2,7 +2,18 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-class TournamentDTO(BaseModel):
+class TournamentBase(BaseModel):
     name: str
-    date: datetime
-    is_completed: bool
+    date: datetime = datetime.now()
+    is_completed: bool = False
+
+
+class TournamentCreate(TournamentBase):
+    pass
+
+
+class Tournament(TournamentBase):
+    id: int
+
+    class Config:
+        from_attributes = True
