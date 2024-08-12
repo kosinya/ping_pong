@@ -16,6 +16,7 @@ def get_connection():
         yield connection
     except Exception as e:
         print(e)
+        raise
     finally:
         connection.close()
 

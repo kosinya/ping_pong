@@ -2,6 +2,9 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 from database import Base
+from models.player import Player
+from models.group import Group
+from models.league import League
 
 
 class Match(Base):
@@ -15,6 +18,6 @@ class Match(Base):
     league_id = Column(Integer, ForeignKey('leagues.id'))
     winner_id = Column(Integer, ForeignKey('players.id'))
 
-    player = relationship('Player', back_populates='match')
-    group = relationship('Group', back_populates='match')
-    league = relationship('League', back_populates='match')
+    player = relationship('Player')
+    group = relationship('Group')
+    league = relationship('League')

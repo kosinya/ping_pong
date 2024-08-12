@@ -2,6 +2,8 @@ from database import Base
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
+from models.department import Department
+
 
 class Player(Base):
     __tablename__ = 'players'
@@ -14,6 +16,4 @@ class Player(Base):
     department_id = Column(Integer, ForeignKey('departments.id'))
     rating = Column(Integer, default=0, nullable=False)
 
-    department = relationship("Department", back_populates="player")
-    group = relationship("Group", back_populates="player")
-    match = relationship("Match", back_populates="player")
+    department = relationship("Department")
