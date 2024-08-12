@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 from database import Base
+from models.tournament import Tournament
 
 
 class League(Base):
@@ -12,4 +13,4 @@ class League(Base):
     n_groups = Column(Integer, nullable=False)
     tournament_id = Column(Integer, ForeignKey('tournaments.id'))
 
-    tournament = relationship('Tournament', back_populates='league')
+    tournament = relationship('Tournament')
