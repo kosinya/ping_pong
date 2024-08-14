@@ -1,11 +1,14 @@
+from fastapi import HTTPException
+
 from database import Session
 from models.league import League
+from models.player import Player
 from dto import league as dto
 
 
 # Получить список всех лиг
-def get_all_leagues(db: Session):
-    return db.query(League).all()
+def get_all_leagues(db: Session, t_id: int):
+    return db.query(League).filter_by(tournament_id=t_id).all()
 
 
 # Получить лигу по id
@@ -44,7 +47,6 @@ def update_league_by_id(db: Session, league_id: int, data: dto.League):
     league = db.query(League).filter_by(id=league_id).first()
     league.name = data.name
     league.n_groups = data.n_groups
-    league.tournament_id = data.tournament_id
 
     try:
         db.add(league)
@@ -57,4 +59,11 @@ def update_league_by_id(db: Session, league_id: int, data: dto.League):
     return league
 
 
+def add_players(db: Session, league_id: int, players: str):
+    player_ids = set([int(item) for item in players.split(',')])
+    ids = db.query(Player.id).all()
 
+    for p in player_ids:
+        if p not in ids:
+            player_ids.remove(p)
+            raise HTTPException(status_code=404, detail=f'Player with id = {p} not found')

@@ -10,8 +10,8 @@ router = APIRouter()
 
 
 @router.get("/all", tags=['league'])
-async def get_all_leagues(db: Session = Depends(get_connection)):
-    return league.get_all_leagues(db)
+async def get_all_leagues(db: Session = Depends(get_connection), t_id: str = None):
+    return league.get_all_leagues(db, int(t_id))
 
 
 @router.get("/{id}", tags=['league'])
