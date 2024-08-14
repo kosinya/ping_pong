@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from services import league
-from dto.league import LeagueDTO
+from dto import league as dto
 from database import get_connection
 
 
@@ -20,7 +20,7 @@ async def get_league_by_id(db: Session = Depends(get_connection), id: str = None
 
 
 @router.post("/", tags=['league'])
-async def create_league(db: Session = Depends(get_connection), data: LeagueDTO = None):
+async def create_league(db: Session = Depends(get_connection), data: dto.LeagueCreate = None):
     return league.create_league(db, data)
 
 
@@ -30,5 +30,5 @@ async def delete_league_by_id(db: Session = Depends(get_connection), id: str = N
 
 
 @router.put("/{id}", tags=['league'])
-async def update_league_by_id(db: Session = Depends(get_connection), id: str = None, data: LeagueDTO = None):
+async def update_league_by_id(db: Session = Depends(get_connection), id: str = None, data: dto.League = None):
     return league.update_league_by_id(db, int(id), data)

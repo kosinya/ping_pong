@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from dto.department import DepartmentDTO
+from dto import department as dto
 from models.department import Department
 
 
@@ -15,8 +15,8 @@ def get_department_by_id(db: Session, department_id: int):
 
 
 # Создать новое отделение
-def create_department(db: Session, department: DepartmentDTO):
-    new_department = Department(name=department.name)
+def create_department(db: Session, data: dto.DepartmentCreate = None):
+    new_department = Department(name=data.name)
     try:
         db.add(new_department)
         db.commit()
@@ -29,7 +29,7 @@ def create_department(db: Session, department: DepartmentDTO):
 
 
 # Изменить отделение по id
-def update_department(db: Session, department_id: int, data: DepartmentDTO):
+def update_department(db: Session, department_id: int, data: dto.Department):
     dep = db.query(Department).filter_by(id=department_id).first()
     dep.name = data.name
 

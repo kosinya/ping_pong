@@ -1,6 +1,6 @@
 from database import Session
 from models.league import League
-from dto.league import LeagueDTO
+from dto import league as dto
 
 
 # Получить список всех лиг
@@ -14,7 +14,7 @@ def get_league_by_id(db: Session, league_id: int):
 
 
 # Создать лигу
-def create_league(db: Session, data: LeagueDTO):
+def create_league(db: Session, data: dto.LeagueCreate):
     new_league = League(
         name=data.name,
         n_groups=data.n_groups,
@@ -33,14 +33,14 @@ def create_league(db: Session, data: LeagueDTO):
 
 # Удалить лигу по id
 def delete_league_by_id(db: Session, league_id: int):
-    db.query(League).filter_by(id=league_id).delete()
+    lg = db.query(League).filter_by(id=league_id).delete()
     db.commit()
-    db.refresh(Leaguqe)
-    return league_id
+    db.refresh()
+    return lg
 
 
 # Обновить лигу по id
-def update_league_by_id(db: Session, league_id: int, data: LeagueDTO):
+def update_league_by_id(db: Session, league_id: int, data: dto.League):
     league = db.query(League).filter_by(id=league_id).first()
     league.name = data.name
     league.n_groups = data.n_groups
@@ -55,3 +55,6 @@ def update_league_by_id(db: Session, league_id: int, data: LeagueDTO):
         print(e)
 
     return league
+
+
+

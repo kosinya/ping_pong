@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from database import get_connection
-from dto.department import DepartmentDTO
+from dto import department as dto
 from services import department
 
 
@@ -11,7 +11,7 @@ router = APIRouter()
 
 # Создание нового отделения
 @router.post('/', tags=['department'])
-async def create_department(db: Session = Depends(get_connection), data: DepartmentDTO = None):
+async def create_department(db: Session = Depends(get_connection), data: dto.DepartmentCreate = None):
     return department.create_department(db, data)
 
 

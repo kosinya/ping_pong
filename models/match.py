@@ -13,7 +13,7 @@ class Match(Base):
     id = Column(Integer, primary_key=True)
     player1_id = Column(Integer, ForeignKey('players.id'))
     player2_id = Column(Integer, ForeignKey('players.id'))
-    type = Column(String)
+    type = Column(String, nullable=False)
     group_id = Column(Integer, ForeignKey('groups.id'))
     league_id = Column(Integer, ForeignKey('leagues.id'))
     winner_id = Column(Integer, ForeignKey('players.id'))
