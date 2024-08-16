@@ -60,10 +60,29 @@ def update_league_by_id(db: Session, league_id: int, data: dto.League):
 
 
 def add_players(db: Session, league_id: int, players: str):
-    player_ids = set([int(item) for item in players.split(',')])
+    new_player_ids = [int(item) for item in players.split(',')]
+    league = db.query(League).filter_by(id=league_id).first()
+    players = [int(i) for i in str(league.players).split(',')]
     ids = db.query(Player.id).all()
 
-    for p in player_ids:
+    for p in new_player_ids:
         if p not in ids:
-            player_ids.remove(p)
+            new_player_ids.remove(p)
             raise HTTPException(status_code=404, detail=f'Player with id = {p} not found')
+
+        if p in players:
+            new_player_ids.remove(p)
+            raise HTTPException(status_code=404, detail=f'Player with id = {p} already exists in players list')
+
+    new_players_list = ""
+    league.players = new_players_list
+
+    try:
+        db.add(league)
+        db.commit()
+        db.refresh(league)
+    except Exception as e:
+        print(e)
+        db.rollback()
+
+    return league
