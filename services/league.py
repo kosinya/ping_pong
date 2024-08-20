@@ -17,11 +17,11 @@ def get_league_by_id(db: Session, league_id: int):
 
 
 # Создать лигу
-def create_league(db: Session, data: dto.LeagueCreate):
+def create_league(db: Session, t_id: int, data: dto.LeagueCreate):
     new_league = League(
         name=data.name,
         n_groups=data.n_groups,
-        tournament_id=data.tournament_id
+        tournament_id=t_id
     )
     try:
         db.add(new_league)
@@ -59,23 +59,19 @@ def update_league_by_id(db: Session, league_id: int, data: dto.League):
     return league
 
 
-def add_players(db: Session, league_id: int, players: str):
-    new_player_ids = [int(item) for item in players.split(',')]
+def add_players(db: Session, league_id: int, player_ids: str):
+    new_player_ids = [int(item) for item in player_ids.split(',')]
+    ids = [i[0] for i in db.query(Player.id).all()]
+
     league = db.query(League).filter_by(id=league_id).first()
-    players = [int(i) for i in str(league.players).split(',')]
-    ids = db.query(Player.id).all()
 
     for p in new_player_ids:
         if p not in ids:
-            new_player_ids.remove(p)
             raise HTTPException(status_code=404, detail=f'Player with id = {p} not found')
 
-        if p in players:
-            new_player_ids.remove(p)
-            raise HTTPException(status_code=404, detail=f'Player with id = {p} already exists in players list')
+    new_league_players = league.players + ',' + ','.join([str(i) for i in new_player_ids])
 
-    new_players_list = ""
-    league.players = new_players_list
+    league.players = new_league_players
 
     try:
         db.add(league)

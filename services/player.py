@@ -21,7 +21,7 @@ def update_player(db: Session, player_id: int, data: player.Player):
     p.surname = data.surname
     p.patronymic = data.patronymic
     p.sex = data.sex
-    p.department = data.department
+    p.department_id = data.department_id
     p.rating = data.rating
 
     try:

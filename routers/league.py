@@ -20,8 +20,8 @@ async def get_league_by_id(db: Session = Depends(get_connection), id: str = None
 
 
 @router.post("/", tags=['league'])
-async def create_league(db: Session = Depends(get_connection), data: dto.LeagueCreate = None):
-    return league.create_league(db, data)
+async def create_league(db: Session = Depends(get_connection), t_id: str = None, data: dto.LeagueCreate = None):
+    return league.create_league(db, int(t_id), data)
 
 
 @router.delete("/{id}", tags=['league'])
@@ -32,3 +32,8 @@ async def delete_league_by_id(db: Session = Depends(get_connection), id: str = N
 @router.put("/{id}", tags=['league'])
 async def update_league_by_id(db: Session = Depends(get_connection), id: str = None, data: dto.League = None):
     return league.update_league_by_id(db, int(id), data)
+
+
+@router.post("/{id}/players", tags=['league'])
+async def add_players(db: Session = Depends(get_connection), id: str = None, player_ids: str = None):
+    return league.add_players(db, int(id), player_ids)

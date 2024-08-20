@@ -12,6 +12,6 @@ class League(Base):
     name = Column(String(100), nullable=False)
     n_groups = Column(Integer, nullable=False)
     tournament_id = Column(Integer, ForeignKey('tournaments.id'))
-    players = Column(String)
+    players = Column(String, nullable=False, default="")
 
     tournament = relationship('Tournament')

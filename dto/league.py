@@ -7,7 +7,7 @@ class LeagueBase(BaseModel):
 
 
 class LeagueCreate(LeagueBase):
-    tournament_id: int
+    pass
 
 
 class League(LeagueBase):
