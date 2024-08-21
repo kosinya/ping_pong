@@ -82,3 +82,40 @@ def add_players(db: Session, league_id: int, player_ids: str):
         db.rollback()
 
     return league
+
+
+def delete_player(db: Session, league_id: int, player_id: int):
+    league = db.query(League).filter_by(id=league_id).first()
+    league_players = league.players.split(',')
+    print(league_players)
+
+    ids = [i[0] for i in db.query(Player.id).all()]
+    if player_id not in ids:
+        raise HTTPException(status_code=404, detail=f'Player with id = {player_id} not found')
+
+    if str(player_id) not in league_players:
+        raise HTTPException(status_code=404, detail=f'Player with id = {player_id} not found '
+                                                    f'in the list of current league players ')
+
+    league_players.remove(str(player_id))
+    league.players = ','.join(league_players)
+    print(league_players)
+
+    try:
+        db.add(league)
+        db.commit()
+        db.refresh(league)
+    except Exception as e:
+        print(e)
+        db.rollback()
+
+    return league
+
+
+def draw(db: Session, league_id: int):
+    league = db.query(League).filter_by(id=league_id).first()
+
+    if league.n_groups % 4 != 0:
+        raise HTTPException(status_code=500, detail=f'The number of players must be a multiple of 4')
+
+

@@ -5,7 +5,6 @@ class GroupBase(BaseModel):
     player_id: int
     score: int
     group_name: str
-    league_id: int
 
 
 class GroupCreate(GroupBase):
@@ -13,7 +12,6 @@ class GroupCreate(GroupBase):
 
 
 class Group(GroupBase):
-    id: int
 
     class Config:
         from_attributes = True
