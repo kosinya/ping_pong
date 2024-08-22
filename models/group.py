@@ -12,7 +12,7 @@ class Group(Base):
     id = Column(Integer, primary_key=True)
     player_id = Column(Integer, ForeignKey('players.id'))
     score = Column(Integer)
-    group_name = Column(String)
+    group_name = Column(String, index=True)
     league_id = Column(Integer, ForeignKey('leagues.id'))
 
     league = relationship('League')

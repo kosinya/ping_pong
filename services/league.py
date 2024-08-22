@@ -1,9 +1,12 @@
+import random
 from fastapi import HTTPException
 
 from database import Session
 from models.league import League
 from models.player import Player
-from dto import league as dto
+from dto import league as leagueDTO
+from dto import group as groupDTO
+from . import group as groupService
 
 
 # Получить список всех лиг
@@ -17,7 +20,7 @@ def get_league_by_id(db: Session, league_id: int):
 
 
 # Создать лигу
-def create_league(db: Session, t_id: int, data: dto.LeagueCreate):
+def create_league(db: Session, t_id: int, data: leagueDTO.LeagueCreate):
     new_league = League(
         name=data.name,
         n_groups=data.n_groups,
@@ -43,7 +46,7 @@ def delete_league_by_id(db: Session, league_id: int):
 
 
 # Обновить лигу по id
-def update_league_by_id(db: Session, league_id: int, data: dto.League):
+def update_league_by_id(db: Session, league_id: int, data: leagueDTO.League):
     league = db.query(League).filter_by(id=league_id).first()
     league.name = data.name
     league.n_groups = data.n_groups
@@ -113,9 +116,32 @@ def delete_player(db: Session, league_id: int, player_id: int):
 
 
 def draw(db: Session, league_id: int):
+    letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+               'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     league = db.query(League).filter_by(id=league_id).first()
+    ids = [int(i) for i in league.players.split(',')]
 
-    if league.n_groups % 4 != 0:
-        raise HTTPException(status_code=500, detail=f'The number of players must be a multiple of 4')
+    if len(ids) % 4 != 0:
+        raise HTTPException(status_code=412, detail=f'The number of players must be a multiple of 4')
 
+    players = db.query(Player).filter(Player.id.in_(ids)).order_by(Player.rating.desc()).all()
 
+    n_iter = len(ids) // 4
+    for i in range(n_iter):
+        choices = letters[0:league.n_groups-1]
+        for j in range(league.n_groups):
+            group_name = random.choice(choices)
+            choices.remove(group_name)
+
+            player = players[0]
+            players.remove(player)
+
+            data = groupDTO.GroupCreate(
+                player_id=player.id,
+                group_name=group_name,
+                score=0
+            )
+
+            groupService.add_player_to_group(db, data, league_id)
+
+    return "Успешный успех!"

@@ -42,3 +42,8 @@ async def add_players(db: Session = Depends(get_connection), id: str = None, pla
 @router.put('/{id}/', tags=['league'])
 async def delete_player(db: Session = Depends(get_connection), id: str = None, player_id: str = None):
     return league.delete_player(db, int(id), int(player_id))
+
+
+@router.post('/{id}/draw', tags=['league'])
+async def draw(db: Session = Depends(get_connection), id: str = None):
+    return league.draw(db, int(id))

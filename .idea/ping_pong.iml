@@ -8,4 +8,11 @@
     <orderEntry type="jdk" jdkName="Python 3.11 (ping_pong)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PyNamespacePackagesService">
+    <option name="namespacePackageFolders">
+      <list>
+        <option value="$MODULE_DIR$/services" />
+      </list>
+    </option>
+  </component>
 </module>
