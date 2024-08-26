@@ -6,7 +6,8 @@ class MatchBase(BaseModel):
     player1_id: int
     player2_id: int
     type: Literal['Групповой', '1/32', '1/16', '1/8', '1/4', '1/2', 'Финал']
-    group_id: int = None
+    group_name: str = None
+    stage: Literal['Золотой этап', 'Серебряный этап', 'Бронзовый этап'] = None
     league_id: int = None
 
 

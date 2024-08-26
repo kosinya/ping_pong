@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from database import Base, engine
-from routers import tournament, player, department, league
+from routers import tournament, player, department, league, match
 
 
 app = FastAPI()
@@ -9,6 +9,7 @@ app.include_router(tournament.router, prefix='/tournaments')
 app.include_router(player.router, prefix='/players')
 app.include_router(league.router, prefix='/tournaments/{t_id}/leagues')
 app.include_router(department.router, prefix='/departments')
+app.include_router(match.router, prefix='/matches')
 Base.metadata.create_all(bind=engine)
 
 

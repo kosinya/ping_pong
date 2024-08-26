@@ -1,12 +1,19 @@
 import random
 from fastapi import HTTPException
+import itertools
 
 from database import Session
 from models.league import League
 from models.player import Player
-from dto import league as leagueDTO
-from dto import group as groupDTO
-from . import group as groupService
+from models.group import Group
+from dto import league as league_dto
+from dto import group as group_dto
+from dto import match as match_dto
+from . import group as group_service
+from . import match as match_service
+
+LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+           'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
 
 # Получить список всех лиг
@@ -20,7 +27,7 @@ def get_league_by_id(db: Session, league_id: int):
 
 
 # Создать лигу
-def create_league(db: Session, t_id: int, data: leagueDTO.LeagueCreate):
+def create_league(db: Session, t_id: int, data: league_dto.LeagueCreate):
     new_league = League(
         name=data.name,
         n_groups=data.n_groups,
@@ -46,7 +53,7 @@ def delete_league_by_id(db: Session, league_id: int):
 
 
 # Обновить лигу по id
-def update_league_by_id(db: Session, league_id: int, data: leagueDTO.League):
+def update_league_by_id(db: Session, league_id: int, data: league_dto.League):
     league = db.query(League).filter_by(id=league_id).first()
     league.name = data.name
     league.n_groups = data.n_groups
@@ -72,9 +79,10 @@ def add_players(db: Session, league_id: int, player_ids: str):
         if p not in ids:
             raise HTTPException(status_code=404, detail=f'Player with id = {p} not found')
 
-    new_league_players = league.players + ',' + ','.join([str(i) for i in new_player_ids])
-
-    league.players = new_league_players
+    if league.players == "":
+        league.players = ','.join([str(i) for i in new_player_ids])
+    else:
+        league.players = league.players + ',' + ','.join([str(i) for i in new_player_ids])
 
     try:
         db.add(league)
@@ -116,8 +124,6 @@ def delete_player(db: Session, league_id: int, player_id: int):
 
 
 def draw(db: Session, league_id: int):
-    letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-               'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     league = db.query(League).filter_by(id=league_id).first()
     ids = [int(i) for i in league.players.split(',')]
 
@@ -128,7 +134,7 @@ def draw(db: Session, league_id: int):
 
     n_iter = len(ids) // 4
     for i in range(n_iter):
-        choices = letters[0:league.n_groups-1]
+        choices = LETTERS[0:league.n_groups]
         for j in range(league.n_groups):
             group_name = random.choice(choices)
             choices.remove(group_name)
@@ -136,12 +142,30 @@ def draw(db: Session, league_id: int):
             player = players[0]
             players.remove(player)
 
-            data = groupDTO.GroupCreate(
+            data = group_dto.GroupCreate(
                 player_id=player.id,
                 group_name=group_name,
                 score=0
             )
 
-            groupService.add_player_to_group(db, data, league_id)
+            group_service.add_player_to_group(db, data, league_id)
 
-    return "Успешный успех!"
+    groups = db.query(Group).filter_by(league_id=league_id).all()
+    create_group_matches(db, league.id, groups, league.n_groups)
+
+    return groups
+
+
+def create_group_matches(db: Session, league_id: int, groups: list, n_groups: int):
+    for i in range(n_groups):
+        group = [g for g in groups if g.group_name == LETTERS[i]]
+        for p1, p2 in itertools.combinations(group, 2):
+            match = match_dto.MatchCreate(
+                player1_id=p1.id,
+                player2_id=p2.id,
+                type="Групповой",
+                group_name=LETTERS[i],
+                league_id=league_id,
+            )
+
+            match_service.create_match(db, match)
