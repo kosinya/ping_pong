@@ -20,3 +20,7 @@ def add_player_to_group(db: Session, data: group.GroupCreate, league_id: int):
         db.rollback()
 
     return new
+
+
+def get_all_groups(db: Session, league_id: int):
+    return db.query(Group).filter_by(league_id=league_id).order_by(Group.group_name.ASC, Group.score.Desc).all()

@@ -9,7 +9,7 @@ app.include_router(tournament.router, prefix='/tournaments')
 app.include_router(player.router, prefix='/players')
 app.include_router(league.router, prefix='/tournaments/{t_id}/leagues')
 app.include_router(department.router, prefix='/departments')
-app.include_router(match.router, prefix='/matches')
+app.include_router(match.router, prefix='tournaments/{t_id}/leagues{l_id}/matches')
 Base.metadata.create_all(bind=engine)
 
 

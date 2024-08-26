@@ -8,6 +8,16 @@ from database import get_connection
 router = APIRouter()
 
 
+@router.get('/all_group_matches', tags=['match'])
+def get_all_group_matches(db: Session = Depends(get_connection), league_id: str = None):
+    return match.get_group_matches(db, int(league_id))
+
+
+@router.get('/', tags=['match'])
+def get_matches_by_playoff(db: Session = Depends(get_connection), league_id: str = None, playoff_id: str = None):
+    return match.get_matches_by_playoff(db, int(league_id), int(playoff_id))
+
+
 @router.put('/', tags=['match'])
 def update_match_result(db: Session = Depends(get_connection), id: str = None, winner_id: str = None):
     return match.update_match_result(db, int(id), int(winner_id))

@@ -45,7 +45,7 @@ def create_league(db: Session, t_id: int, data: league_dto.LeagueCreate):
 
 
 # Удалить лигу по id
-def delete_league_by_id(db: Session, league_id: int):
+def delete_league_by_id(db: Session, t_id: int, league_id: int):
     lg = db.query(League).filter_by(id=league_id).delete()
     db.commit()
     db.refresh()
@@ -53,7 +53,7 @@ def delete_league_by_id(db: Session, league_id: int):
 
 
 # Обновить лигу по id
-def update_league_by_id(db: Session, league_id: int, data: league_dto.League):
+def update_league_by_id(db: Session, t_id: int, league_id: int, data: league_dto.League):
     league = db.query(League).filter_by(id=league_id).first()
     league.name = data.name
     league.n_groups = data.n_groups
@@ -69,7 +69,7 @@ def update_league_by_id(db: Session, league_id: int, data: league_dto.League):
     return league
 
 
-def add_players(db: Session, league_id: int, player_ids: str):
+def add_players(db: Session, t_id: int, league_id: int, player_ids: str):
     new_player_ids = [int(item) for item in player_ids.split(',')]
     ids = [i[0] for i in db.query(Player.id).all()]
 
@@ -95,7 +95,7 @@ def add_players(db: Session, league_id: int, player_ids: str):
     return league
 
 
-def delete_player(db: Session, league_id: int, player_id: int):
+def delete_player(db: Session, t_id: int, league_id: int, player_id: int):
     league = db.query(League).filter_by(id=league_id).first()
     league_players = league.players.split(',')
     print(league_players)
@@ -123,12 +123,12 @@ def delete_player(db: Session, league_id: int, player_id: int):
     return league
 
 
-def draw(db: Session, league_id: int):
+def draw(db: Session, t_id: int, league_id: int):
     league = db.query(League).filter_by(id=league_id).first()
     ids = [int(i) for i in league.players.split(',')]
 
-    if len(ids) % 4 != 0:
-        raise HTTPException(status_code=412, detail=f'The number of players must be a multiple of 4')
+    if len(ids) % league.n_groups != 0:
+        raise HTTPException(status_code=400, detail=f'The number of players must be a multiple of 4')
 
     players = db.query(Player).filter(Player.id.in_(ids)).order_by(Player.rating.desc()).all()
 
@@ -169,3 +169,16 @@ def create_group_matches(db: Session, league_id: int, groups: list, n_groups: in
             )
 
             match_service.create_match(db, match)
+
+
+def complete_the_group_stage(db: Session, league_id: int):
+    n = match_service.get_count_unplayed_group_matches(db, league_id)
+    league = get_league_by_id(db, league_id)
+
+    if n != 0:
+        raise HTTPException(status_code=400, detail=f"{n} more matches have not been played in the group stage")
+
+    groups = group_service.get_all_groups(db, league_id)
+    n = len(groups) / league.n_groups
+    if n > 3:
+        n = 3

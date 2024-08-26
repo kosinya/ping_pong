@@ -7,32 +7,36 @@ from dto import match
 
 
 def create_match(db: Session, data: match.MatchCreate):
-    match = Match(
+    new_match = Match(
         player1_id=data.player1_id,
         player2_id=data.player2_id,
         type=data.type,
         group_name=data.group_name,
-        stage=data.stage,
+        playoff_id=data.playoff_id,
         league_id=data.league_id
     )
 
     try:
-        db.add(match)
+        db.add(new_match)
         db.commit()
-        db.refresh(match)
+        db.refresh(new_match)
     except Exception as e:
         print(e)
         db.rollback()
 
-    return match
+    return new_match
 
 
 def get_group_matches(db: Session, league_id: int):
     return db.query(Match).filter(id=league_id, type="Групповой").all()
 
 
-def get_matches_by_stage(db: Session, league_id: int, stage: str):
-    return db.query(Match).filter(id=league_id, stage=stage).all()
+def get_matches_by_playoff(db: Session, playoff_id: int):
+    return db.query(Match).filter(playoff_id=playoff_id).all()
+
+
+def get_count_unplayed_group_matches(db: Session, league_id: int):
+    return db.query(Match).filter_by(league_id=league_id, winner_id=None).count()
 
 
 def update_match_result(db: Session, id: int, winner_id: int):
