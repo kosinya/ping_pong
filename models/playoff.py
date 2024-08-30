@@ -10,7 +10,8 @@ class Playoff(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    stage = Column(String)
+    start_stage = Column(String)
+    current_stage = Column(String)
     league_id = Column(Integer, ForeignKey('leagues.id'))
 
     league = relationship("League")

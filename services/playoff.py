@@ -6,7 +6,8 @@ from dto import playoff
 def create_playoff(db: Session, data: playoff.PlayoffCreate):
     new_playoff = Playoff(
         name=data.name,
-        stage=data.stage,
+        start_stage=data.start_stage,
+        current_stage=data.current_stage,
         league_id = data.league_id
     )
 

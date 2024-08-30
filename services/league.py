@@ -179,6 +179,18 @@ def complete_the_group_stage(db: Session, league_id: int):
         raise HTTPException(status_code=400, detail=f"{n} more matches have not been played in the group stage")
 
     groups = group_service.get_all_groups(db, league_id)
-    n = len(groups) / league.n_groups
+    n = len(groups) // league.n_groups
     if n > 3:
         n = 3
+
+    types_of_playoff = ['gold', 'silver', 'bronze']
+    for i in range(n):
+        playoff_player_ids = []
+        for j in range(0, len(groups), 4):
+            playoff_player_ids.append(groups[j+i].player_id)
+        for p in range(0, len(playoff_player_ids), 2):
+            data = match_dto.MatchCreate(
+                player1_id=playoff_player_ids[p],
+                player2_id=playoff_player_ids[p+1],
+
+            )
