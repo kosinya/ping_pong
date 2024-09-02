@@ -9,11 +9,6 @@ def get_tournaments(db: Session):
     return db.query(Tournament).all()
 
 
-# Получить турнир по id
-def get_tournament(db: Session, tournament_id: int):
-    return db.query(Tournament).filter_by(id=tournament_id).first()
-
-
 # Создать турнир
 def create_tournament(db: Session, data: tournament.TournamentCreate):
     new_tournament = Tournament(

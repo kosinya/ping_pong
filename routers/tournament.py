@@ -14,11 +14,6 @@ async def get_tournaments(db: Session = Depends(get_connection)):
     return service.get_tournaments(db)
 
 
-@router.get('/{id}', tags=['tournament'])
-async def get_tournament(id: str = None, db: Session = Depends(get_connection)):
-    return service.get_tournament(db, int(id))
-
-
 @router.delete('/{id}', tags=['tournament'])
 async def delete_tournament(id: str = None, db: Session = Depends(get_connection)):
     return service.delete_tournament(db, int(id))
