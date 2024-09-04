@@ -31,7 +31,6 @@ def create_tournament(db: Session, data: tournament.TournamentCreate):
 def delete_tournament(db: Session, tournament_id: int):
     tm = db.query(Tournament).filter_by(id=tournament_id).delete()
     db.commit()
-    db.refresh(Tournament)
     return tm
 
 
