@@ -14,8 +14,8 @@ def get_all_group_matches(db: Session = Depends(get_connection), league_id: str 
 
 
 @router.get('/', tags=['match'])
-def get_matches_by_playoff(db: Session = Depends(get_connection), league_id: str = None, playoff_id: str = None):
-    return match.get_matches_by_playoff(db, int(league_id), int(playoff_id))
+def get_matches_by_playoff(db: Session = Depends(get_connection), playoff_id: str = None):
+    return match.get_matches_by_playoff(db, int(playoff_id))
 
 
 @router.put('/', tags=['match'])

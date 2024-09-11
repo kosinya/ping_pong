@@ -45,10 +45,9 @@ def create_league(db: Session, t_id: int, data: league_dto.LeagueCreate):
 
 
 # Удалить лигу по id
-def delete_league_by_id(db: Session, t_id: int, league_id: int):
+def delete_league_by_id(db: Session, league_id: int):
     lg = db.query(League).filter_by(id=league_id).delete()
     db.commit()
-    db.refresh()
     return lg
 
 
@@ -69,7 +68,7 @@ def update_league_by_id(db: Session, t_id: int, league_id: int, data: league_dto
     return league
 
 
-def add_players(db: Session, t_id: int, league_id: int, player_ids: str):
+def add_players(db: Session, league_id: int, player_ids: str):
     new_player_ids = [int(item) for item in player_ids.split(',')]
     ids = [i[0] for i in db.query(Player.id).all()]
 
@@ -95,7 +94,7 @@ def add_players(db: Session, t_id: int, league_id: int, player_ids: str):
     return league
 
 
-def delete_player(db: Session, t_id: int, league_id: int, player_id: int):
+def delete_player(db: Session, league_id: int, player_id: int):
     league = db.query(League).filter_by(id=league_id).first()
     league_players = league.players.split(',')
     print(league_players)

@@ -3,6 +3,7 @@ from fastapi.exceptions import HTTPException
 from database import Session
 from models.match import Match
 from models.group import Group
+from models.player import Player
 from dto import match
 
 
@@ -28,11 +29,13 @@ def create_match(db: Session, data: match.MatchCreate):
 
 
 def get_group_matches(db: Session, league_id: int):
-    return db.query(Match).filter(id=league_id, type="Групповой").all()
+    q = db.query(Match, Player).join(Player, Match.player1_id == Player.id)
+    result = q.filter(Match.league_id == league_id).all()
+    return result
 
 
 def get_matches_by_playoff(db: Session, playoff_id: int):
-    return db.query(Match).filter(playoff_id=playoff_id).all()
+     return db.query(Match).filter_by(playoff_id=playoff_id).all()
 
 
 def get_count_unplayed_group_matches(db: Session, league_id: int):

@@ -9,7 +9,7 @@ from database import get_connection
 router = APIRouter()
 
 
-@router.get("/all", tags=['league'])
+@router.get("", tags=['league'])
 async def get_all_leagues(db: Session = Depends(get_connection), t_id: str = None):
     return league.get_all_leagues(db, int(t_id))
 
@@ -45,5 +45,5 @@ async def delete_player(db: Session = Depends(get_connection), id: str = None, p
 
 
 @router.post('/{id}/draw', tags=['league'])
-async def draw(db: Session = Depends(get_connection), id: str = None):
-    return league.draw(db, int(id))
+async def draw(db: Session = Depends(get_connection), t_id: str = None, id: str = None):
+    return league.draw(db, int(t_id), int(id))
