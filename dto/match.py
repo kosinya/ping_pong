@@ -16,7 +16,7 @@ class MatchCreate(MatchBase):
 
 
 class Match(MatchBase):
-    id: int
+    match_id: int
     winner_id: int = None
 
     class Config:

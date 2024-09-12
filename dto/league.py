@@ -11,7 +11,7 @@ class LeagueCreate(LeagueBase):
 
 
 class League(LeagueBase):
-    id: int
+    league_id: int
 
     class Config:
         from_attributes = True

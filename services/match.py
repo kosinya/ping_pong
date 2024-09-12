@@ -35,15 +35,15 @@ def get_group_matches(db: Session, league_id: int):
 
 
 def get_matches_by_playoff(db: Session, playoff_id: int):
-     return db.query(Match).filter_by(playoff_id=playoff_id).all()
+    return db.query(Match).filter_by(playoff_id=playoff_id).all()
 
 
 def get_count_unplayed_group_matches(db: Session, league_id: int):
     return db.query(Match).filter_by(league_id=league_id, winner_id=None).count()
 
 
-def update_match_result(db: Session, id: int, winner_id: int):
-    m = db.query(Match).filter_by(id=id).first()
+def update_match_result(db: Session, mathc_id: int, winner_id: int):
+    m = db.query(Match).filter_by(id=mathc_id).first()
     m.winner_id = winner_id
     try:
         db.add(m)

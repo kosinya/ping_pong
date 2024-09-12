@@ -13,7 +13,7 @@ class TournamentCreate(TournamentBase):
 
 
 class Tournament(TournamentBase):
-    id: int
+    tournament_id: int
 
     class Config:
         from_attributes = True

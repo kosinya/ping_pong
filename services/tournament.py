@@ -29,14 +29,14 @@ def create_tournament(db: Session, data: tournament.TournamentCreate):
 
 # Удалить турнир
 def delete_tournament(db: Session, tournament_id: int):
-    tm = db.query(Tournament).filter_by(id=tournament_id).delete()
+    tm = db.query(Tournament).filter_by(tournament_id=tournament_id).delete()
     db.commit()
     return tm
 
 
-# Обновление статуса турнира
+# Обновление турнира
 def update_tournament(db: Session, tournament_id: int, data: tournament.Tournament):
-    tm = db.query(Tournament).filter_by(id=tournament_id).first()
+    tm = db.query(Tournament).filter_by(tournament_id=tournament_id).first()
     tm.name = data.name
     tm.date = data.date
     tm.is_completed = data.is_completed

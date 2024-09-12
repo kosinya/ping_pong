@@ -15,13 +15,13 @@ async def get_tournaments(db: Session = Depends(get_connection)):
 
 
 @router.delete('/{id}', tags=['tournament'])
-async def delete_tournament(id: str = None, db: Session = Depends(get_connection)):
-    return service.delete_tournament(db, int(id))
+async def delete_tournament(db: Session = Depends(get_connection), t_id: str = None, ):
+    return service.delete_tournament(db, int(t_id))
 
 
 @router.put('/{id}', tags=['tournament'])
-async def update_tournament_status(data: dto.Tournament, id: str = None, db: Session = Depends(get_connection)):
-    return service.update_tournament(db, int(id), data)
+async def update_tournament(db: Session = Depends(get_connection), t_id: str = None, data: dto.Tournament = None):
+    return service.update_tournament(db, int(t_id), data)
 
 
 @router.post('/', tags=['tournament'])
