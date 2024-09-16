@@ -9,7 +9,7 @@ from database import get_connection
 router = APIRouter()
 
 
-@router.get("", tags=['league'])
+@router.get("/all", tags=['league'])
 async def get_all_leagues(db: Session = Depends(get_connection), t_id: str = None):
     return league.get_all_leagues(db, int(t_id))
 
@@ -19,19 +19,19 @@ async def create_league(db: Session = Depends(get_connection), t_id: str = None,
     return league.create_league(db, int(t_id), data)
 
 
-@router.delete("/{id}", tags=['league'])
-async def delete_league(db: Session = Depends(get_connection), id: str = None):
-    return league.delete_league(db, int(id))
+@router.delete("/{l_id}", tags=['league'])
+async def delete_league(db: Session = Depends(get_connection), l_id: str = None):
+    return league.delete_league(db, int(l_id))
 
 
-@router.put("/{id}", tags=['league'])
-async def update_league(db: Session = Depends(get_connection), id: str = None, data: dto.League = None):
-    return league.update_league(db, int(id), data)
+@router.put("/{l_id}", tags=['league'])
+async def update_league(db: Session = Depends(get_connection), l_id: str = None, data: dto.League = None):
+    return league.update_league(db, int(l_id), data)
 
 
-@router.put("/{id}/players", tags=['league'])
-async def add_players(db: Session = Depends(get_connection), league_id: str = None, player_ids: str = None):
-    return league.add_players(db, int(league_id), player_ids)
+@router.put("/{l_id}/players", tags=['league'])
+async def add_players(db: Session = Depends(get_connection), l_id: str = None, player_ids: str = None):
+    return league.add_players(db, int(l_id), player_ids)
 
 
 @router.put('/{id}/', tags=['league'])
