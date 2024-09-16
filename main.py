@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from  fastapi.middleware.cors import CORSMiddleware
 from database import Base, engine
-from routers import tournament, player, department, league, match
+from routers import tournament, player, department, league, match, group
 
 
 app = FastAPI()
@@ -21,6 +21,7 @@ app.include_router(player.router, prefix='/players')
 app.include_router(league.router, prefix='/leagues')
 app.include_router(department.router, prefix='/departments')
 app.include_router(match.router, prefix='/matches')
+app.include_router(group.router, prefix='/groups')
 Base.metadata.create_all(bind=engine)
 
 

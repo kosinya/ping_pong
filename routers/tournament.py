@@ -14,12 +14,12 @@ async def get_tournaments(db: Session = Depends(get_connection)):
     return service.get_tournaments(db)
 
 
-@router.delete('/{t_ id}', tags=['tournament'])
+@router.delete('/{t_id}', tags=['tournament'])
 async def delete_tournament(db: Session = Depends(get_connection), t_id: str = None, ):
     return service.delete_tournament(db, int(t_id))
 
 
-@router.put('/{id}', tags=['tournament'])
+@router.put('/{t_id}', tags=['tournament'])
 async def update_tournament(db: Session = Depends(get_connection), t_id: str = None, data: dto.Tournament = None):
     return service.update_tournament(db, int(t_id), data)
 

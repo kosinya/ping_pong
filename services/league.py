@@ -71,9 +71,9 @@ def update_league(db: Session, league_id: int, data: league_dto.League):
 # Добавить в лигу игроков
 def add_players(db: Session, league_id: int, player_ids: str):
     new_player_ids = [int(item) for item in player_ids.split(',')]
-    ids = [i[0] for i in db.query(Player.id).all()]
+    ids = [i[0] for i in db.query(Player.player_id).all()]
 
-    league = db.query(League).filter_by(id=league_id).first()
+    league = db.query(League).filter_by(league_id=league_id).first()
 
     for p in new_player_ids:
         if p not in ids:
@@ -126,13 +126,13 @@ def delete_player(db: Session, league_id: int, player_id: int):
 
 # Провести жеребьевку
 def draw(db: Session, league_id: int):
-    league = db.query(League).filter_by(id=league_id).first()
+    league = db.query(League).filter_by(league_id=league_id).first()
     ids = [int(i) for i in league.players.split(',')]
 
     if len(ids) % league.n_groups != 0:
         raise HTTPException(status_code=400, detail=f'The number of players must be a multiple of 4')
 
-    players = db.query(Player).filter(Player.id.in_(ids)).order_by(Player.rating.desc()).all()
+    players = db.query(Player).filter(Player.player_id.in_(ids)).order_by(Player.rating.desc()).all()
 
     n_iter = len(ids) // 4
     for i in range(n_iter):
@@ -145,7 +145,7 @@ def draw(db: Session, league_id: int):
             players.remove(player)
 
             data = group_dto.GroupCreate(
-                player_id=player.id,
+                player_id=player.player_id,
                 group_name=group_name,
                 score=0
             )
@@ -153,7 +153,7 @@ def draw(db: Session, league_id: int):
             group_service.add_player_to_group(db, data, league_id)
 
     groups = db.query(Group).filter_by(league_id=league_id).all()
-    create_group_matches(db, league.id, groups, league.n_groups)
+    create_group_matches(db, league.league_id, groups, league.n_groups)
 
     return "success"
 

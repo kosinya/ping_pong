@@ -29,7 +29,7 @@ def create_match(db: Session, data: match.MatchCreate):
 
 
 def get_group_matches(db: Session, league_id: int):
-    q = db.query(Match, Player).join(Player, Match.player1_id == Player.id)
+    q = db.query(Match, Player).join(Player, Match.player1_id == Player.player_id)
     result = q.filter(Match.league_id == league_id).all()
     return result
 
