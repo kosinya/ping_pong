@@ -46,7 +46,7 @@ def update_department(db: Session, department_id: int, data: dto.Department):
 
 # Удалить отделение по id
 def delete_department(db: Session, department_id: int):
-    dep = db.query(Department).filter_by(id=department_id).delete()
+    dep = get_department_by_id(db, department_id)
+    db.delete(dep)
     db.commit()
-    db.refresh(dep)
     return dep
