@@ -37,9 +37,8 @@ def update_player(db: Session, player_id: int, data: player.Player):
 
 # Удалить игрока по id
 def delete_player(db: Session, player_id: int):
-    p = db.query(Player).filter_by(id=player_id).delete()
+    p = db.query(Player).filter_by(player_id=player_id).delete()
     db.commit()
-    db.refresh(p)
     return p
 
 
