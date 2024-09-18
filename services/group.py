@@ -24,6 +24,4 @@ def add_player_to_group(db: Session, data: group.GroupCreate, league_id: int):
 
 
 def get_all_groups(db: Session, l_id: int):
-    return (db.query(Group, Player).join(Player, Group.player_id == Player.player_id).all())
-            # .filter(Group.league_id == l_id)
-            #.order_by(Group.group_name.asc(), Group.score.desc()).all())
+    return db.query(Group).filter(Group.league_id == l_id).order_by(Group.group_name.asc(), Group.score.desc()).all()
