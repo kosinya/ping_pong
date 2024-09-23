@@ -1,3 +1,6 @@
+from sqlalchemy import text
+from starlette.responses import JSONResponse
+
 from models.group import Group
 from models.player import Player
 from dto import group
@@ -24,4 +27,22 @@ def add_player_to_group(db: Session, data: group.GroupCreate, league_id: int):
 
 
 def get_all_groups(db: Session, l_id: int):
-    return db.query(Group).filter(Group.league_id == l_id).order_by(Group.group_name.asc(), Group.score.desc()).all()
+    query = text("""SELECT g.*, p.surname, p.name, p.patronymic
+                    FROM groups g
+                    JOIN players p ON g.player_id = p.player_id;""")
+    results = db.execute(query).fetchall()
+    print(results)
+    data = []
+    if results:
+        for r in results:
+            data.append({
+                "id": r[0],
+                "player_id": r[1],
+                "score": r[2],
+                "group_name": r[3],
+                "league_id": r[4],
+                "surname": r[5],
+                "name": r[6],
+                "patronymic": r[7]
+            })
+    return JSONResponse(content=data, status_code=200)

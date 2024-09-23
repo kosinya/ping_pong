@@ -1,6 +1,5 @@
 from database import Base
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
 
 from models.department import Department
 
@@ -13,7 +12,5 @@ class Player(Base):
     name = Column(String(30), nullable=False)
     patronymic = Column(String(30))
     sex = Column(String, nullable=False)
-    department_id = Column(Integer, ForeignKey('departments.id'))
+    department_id = Column(Integer, ForeignKey(Department.id))
     rating = Column(Integer, nullable=False)
-
-    department = relationship("Department")

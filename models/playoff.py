@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
 
 from database import Base
 from models.league import League
@@ -12,6 +11,4 @@ class Playoff(Base):
     name = Column(String)
     start_stage = Column(String)
     current_stage = Column(String)
-    league_id = Column(Integer, ForeignKey('leagues.league_id'))
-
-    league = relationship("League")
+    league_id = Column(Integer, ForeignKey(League.league_id, ondelete='CASCADE'))
