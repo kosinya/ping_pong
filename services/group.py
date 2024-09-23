@@ -29,9 +29,9 @@ def add_player_to_group(db: Session, data: group.GroupCreate, league_id: int):
 def get_all_groups(db: Session, l_id: int):
     query = text("""SELECT g.*, p.surname, p.name, p.patronymic
                     FROM groups g
-                    JOIN players p ON g.player_id = p.player_id;""")
+                    JOIN players p ON g.player_id = p.player_id
+                    ORDER BY g.group_name ASC;""")
     results = db.execute(query).fetchall()
-    print(results)
     data = []
     if results:
         for r in results:
