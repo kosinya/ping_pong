@@ -97,11 +97,11 @@ def add_players(db: Session, league_id: int, player_ids: str):
 
 # Удалить игрока из лиги
 def delete_player(db: Session, league_id: int, player_id: int):
-    league = db.query(League).filter_by(id=league_id).first()
+    league = db.query(League).filter_by(league_id=league_id).first()
     league_players = league.players.split(',')
     print(league_players)
 
-    ids = [i[0] for i in db.query(Player.id).all()]
+    ids = [i[0] for i in db.query(Player.player_id).all()]
     if player_id not in ids:
         raise HTTPException(status_code=404, detail=f'Player with id = {player_id} not found')
 

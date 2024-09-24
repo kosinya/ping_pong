@@ -24,7 +24,7 @@ async def delete_league(db: Session = Depends(get_connection), l_id: str = None)
     return league.delete_league(db, int(l_id))
 
 
-@router.put("/{l_id}", tags=['league'])
+@router.put("/", tags=['league'])
 async def update_league(db: Session = Depends(get_connection), l_id: str = None, data: dto.League = None):
     return league.update_league(db, int(l_id), data)
 
@@ -34,9 +34,9 @@ async def add_players(db: Session = Depends(get_connection), l_id: str = None, p
     return league.add_players(db, int(l_id), player_ids)
 
 
-@router.put('/{id}/', tags=['league'])
-async def delete_player(db: Session = Depends(get_connection), league_id: str = None, player_id: str = None):
-    return league.delete_player(db, int(league_id), int(player_id))
+@router.put('/{l_id}/', tags=['league'])
+async def delete_player(db: Session = Depends(get_connection), l_id: str = None, player_id: str = None):
+    return league.delete_player(db, int(l_id), int(player_id))
 
 
 @router.post('/{id}/draw', tags=['league'])

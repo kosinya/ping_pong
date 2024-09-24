@@ -30,7 +30,7 @@ def get_players(db: Session):
 
 # Получить игрока по id
 def get_player(db: Session, player_id: int):
-    return db.query(Player).filter_by(id=player_id).first()
+    return db.query(Player).filter_by(player_id=player_id).first()
 
 
 # Обновить игрока по id
