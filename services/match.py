@@ -1,4 +1,6 @@
 from fastapi.exceptions import HTTPException
+from sqlalchemy import text
+from starlette.responses import JSONResponse
 
 from database import Session
 from models.match import Match
@@ -29,9 +31,33 @@ def create_match(db: Session, data: match.MatchCreate):
 
 
 def get_group_matches(db: Session, league_id: int):
-    q = db.query(Match, Player).join(Player, Match.player1_id == Player.player_id)
-    result = q.filter(Match.league_id == league_id).all()
-    return result
+    query = text(f"""SELECT m.*, p1.surname AS 'player1_surname', p1.name AS 'player1_name',
+                     p2.surname AS 'player2_surname', p2.name AS 'player2_name'
+                     FROM matches m
+                     JOIN players p1 ON m.player1_id = p1.player_id
+                     JOIN players p2 ON m.player2_id = p2.player_id
+                     WHERE m.league_id = {league_id};
+    """)
+    results = db.execute(query).fetchall()
+    data = []
+    if results:
+        for result in results:
+            data.append({
+                "match_id": result[0],
+                "player1_id": result[1],
+                "player2_id": result[2],
+                "type": result[3],
+                "score": result[4],
+                "group_name": result[5],
+                "playoff_id": result[6],
+                "league_id": result[7],
+                "winner_id": result[8],
+                "player1_surname": result[9],
+                "player1_name": result[10],
+                "player2_surname": result[11],
+                "player2_name": result[12]
+            })
+    return JSONResponse(content=data, status_code=200)
 
 
 def get_matches_by_playoff(db: Session, playoff_id: int):
@@ -42,9 +68,10 @@ def get_count_unplayed_group_matches(db: Session, league_id: int):
     return db.query(Match).filter_by(league_id=league_id, winner_id=None).count()
 
 
-def update_match_result(db: Session, mathc_id: int, winner_id: int):
-    m = db.query(Match).filter_by(id=mathc_id).first()
+def update_match_result(db: Session, match_id: int, winner_id: int, score: str):
+    m = db.query(Match).filter_by(match_id=match_id).first()
     m.winner_id = winner_id
+    m.score = score
     try:
         db.add(m)
         db.commit()

@@ -18,5 +18,6 @@ def get_matches_by_playoff(db: Session = Depends(get_connection), playoff_id: st
 
 
 @router.put('/', tags=['match'])
-def update_match_result(db: Session = Depends(get_connection), match_id: str = None, winner_id: str = None):
-    return match.update_match_result(db, int(match_id), int(winner_id))
+def update_match_result(db: Session = Depends(get_connection), match_id: str = None, winner_id: str = None,
+                        score: str = None):
+    return match.update_match_result(db, int(match_id), int(winner_id), score)

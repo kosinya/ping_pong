@@ -167,6 +167,7 @@ def create_group_matches(db: Session, league_id: int, groups: list, n_groups: in
                 player1_id=p1.id,
                 player2_id=p2.id,
                 type="Групповой",
+                score="",
                 group_name=LETTERS[i],
                 league_id=league_id,
             )
