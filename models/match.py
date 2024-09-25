@@ -19,4 +19,4 @@ class Match(Base):
     group_name = Column(String)
     playoff_id = Column(Integer, ForeignKey(Playoff.playoff_id, ondelete='CASCADE'))
     league_id = Column(Integer, ForeignKey(League.league_id, ondelete='CASCADE'))
-    winner_id = Column(Integer, ForeignKey(Player.player_id, ondelete='CASCADE'))
+    winner_id = Column(Integer, ForeignKey(Player.player_id))

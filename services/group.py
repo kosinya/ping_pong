@@ -33,6 +33,7 @@ def get_all_groups(db: Session, l_id: int):
                      WHERE g.league_id = {l_id}
                      ORDER BY g.group_name ASC;""")
     results = db.execute(query).fetchall()
+
     data = []
     if results:
         for r in results:
