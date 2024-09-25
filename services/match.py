@@ -14,6 +14,8 @@ def create_match(db: Session, data: match.MatchCreate):
         player1_id=data.player1_id,
         player2_id=data.player2_id,
         type=data.type,
+        score=data.score,
+        invoice_by_batch=data.invoice_by_batch,
         group_name=data.group_name,
         playoff_id=data.playoff_id,
         league_id=data.league_id
@@ -48,14 +50,15 @@ def get_group_matches(db: Session, league_id: int):
                 "player2_id": result[2],
                 "type": result[3],
                 "score": result[4],
-                "group_name": result[5],
-                "playoff_id": result[6],
-                "league_id": result[7],
-                "winner_id": result[8],
-                "player1_surname": result[9],
-                "player1_name": result[10],
-                "player2_surname": result[11],
-                "player2_name": result[12]
+                "invoice_by_batch": result[5],
+                "group_name": result[6],
+                "playoff_id": result[7],
+                "league_id": result[8],
+                "winner_id": result[9],
+                "player1_surname": result[10],
+                "player1_name": result[11],
+                "player2_surname": result[12],
+                "player2_name": result[13]
             })
     return JSONResponse(content=data, status_code=200)
 

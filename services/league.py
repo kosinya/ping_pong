@@ -163,12 +163,12 @@ def create_group_matches(db: Session, league_id: int, groups: list, n_groups: in
     for i in range(n_groups):
         group = [g for g in groups if g.group_name == LETTERS[i]]
         for p1, p2 in itertools.combinations(group, 2):
-            print(p1, p2)
             match = match_dto.MatchCreate(
                 player1_id=p1.player_id,
                 player2_id=p2.player_id,
                 type="Групповой",
-                score="",
+                score="0-0",
+                invoice_by_batch="0-0 0-0 0-0",
                 group_name=LETTERS[i],
                 league_id=league_id,
             )

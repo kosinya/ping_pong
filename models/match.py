@@ -16,6 +16,7 @@ class Match(Base):
     player2_id = Column(Integer, ForeignKey(Player.player_id))
     type = Column(String, nullable=False)
     score = Column(String())
+    invoice_by_batch = Column(String())
     group_name = Column(String)
     playoff_id = Column(Integer, ForeignKey(Playoff.playoff_id, ondelete='CASCADE'))
     league_id = Column(Integer, ForeignKey(League.league_id, ondelete='CASCADE'))

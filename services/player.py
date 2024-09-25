@@ -10,7 +10,7 @@ from dto import player
 def get_players(db: Session):
     query = text("""SELECT p.*, d.name
                     FROM players p
-                    JOIN departments d ON p.department_id = d.id;""")
+                    LEFT JOIN departments d ON p.department_id = d.id;""")
     results = db.execute(query).fetchall()
     data = []
     if results:

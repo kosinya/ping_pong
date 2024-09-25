@@ -11,4 +11,3 @@ router = APIRouter()
 @router.get('', tags=['group'])
 async def get_groups(db: Session = Depends(get_connection), l_id: str = None):
     return group.get_all_groups(db, int(l_id))
-
