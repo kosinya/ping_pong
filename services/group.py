@@ -63,9 +63,11 @@ def updating_the_results(db: Session, league_id: int, group_name: str):
 
     for rank, players_in_rank in ranked_players.items():
         ids = []
-        if len(players_in_rank) >= 1:
+        if len(players_in_rank) > 1:
             for player in players_in_rank:
                 ids.append(player.player_id)
+            pairs = itertools.combinations(ids, 2)
+            matches = db.query(Match)
         print(ids)
 
     db.add_all(ranked)

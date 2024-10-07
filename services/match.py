@@ -72,10 +72,11 @@ def get_count_unplayed_group_matches(db: Session, league_id: int):
     return db.query(Match).filter_by(league_id=league_id, winner_id=None).count()
 
 
-def update_match_result(db: Session, match_id: int, winner_id: int, score: str):
+def update_match_result(db: Session, match_id: int, winner_id: int, score: str, by_batch: str):
     m = db.query(Match).filter_by(match_id=match_id).first()
     m.winner_id = winner_id
     m.score = score
+    m.invoice_by_batch = by_batch
     try:
         db.add(m)
         db.commit()

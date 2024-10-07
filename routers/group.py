@@ -12,3 +12,8 @@ router = APIRouter()
 async def get_groups(db: Session = Depends(get_connection), l_id: str = None):
     data = group.get_all_groups(db, int(l_id))
     return JSONResponse(content=data, status_code=200)
+
+
+# @router.post('', tags=['group'])
+# async def conflict_resolution(db: Session = Depends(get_connection), l_id: str = None, n_groups: str = None):
+#     return group.conflict_resolution(db, int(l_id), int(n_groups))

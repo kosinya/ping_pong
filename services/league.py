@@ -185,12 +185,12 @@ def complete_the_group_stage(db: Session, league_id: int):
         raise HTTPException(status_code=400, detail=f"{n} more matches have not been played in the group stage")
 
     groups = group_service.get_all_groups(db, league_id)
-    parse_group = {}
-    for i in range(league.n_groups):
-        parse_group[LETTERS[i]] = []
-        for g in groups:
-            if g["group_name"] == LETTERS[i]:
-                parse_group[LETTERS[i]].append(g)
-            else:
-                continue
+    parse_by_place = [[], [], []]
+    for g in groups:
+        if g["place"] == 1:
+            parse_by_place[0].append(g["player_id"])
+        elif g["place"] == 2:
+            parse_by_place[1].append(g["player_id"])
+        elif g["place"] == 3:
+            parse_by_place[2].append(g["player_id"])
 
