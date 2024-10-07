@@ -1,3 +1,4 @@
+import json
 import random
 from fastapi import HTTPException
 import itertools
@@ -23,7 +24,7 @@ def get_all_leagues(db: Session, t_id: int):
 
 # Получить лигу по id
 def get_league_by_id(db: Session, league_id: int):
-    return db.query(League).filter_by(id=league_id).first()
+    return db.query(League).filter_by(league_id=league_id).first()
 
 
 # Создать лигу
@@ -153,13 +154,13 @@ def draw(db: Session, league_id: int):
             group_service.add_player_to_group(db, data, league_id)
 
     groups = db.query(Group).filter_by(league_id=league_id).all()
-    create_group_matches(db, league.league_id, groups, league.n_groups)
+    create_group_matches(db, league.league_id, league.n_groups, groups)
 
     return "success"
 
 
 # Создание групповых матчей
-def create_group_matches(db: Session, league_id: int, groups: list, n_groups: int):
+def create_group_matches(db: Session, league_id: int, n_groups: int, groups: list):
     for i in range(n_groups):
         group = [g for g in groups if g.group_name == LETTERS[i]]
         for p1, p2 in itertools.combinations(group, 2):
@@ -176,25 +177,20 @@ def create_group_matches(db: Session, league_id: int, groups: list, n_groups: in
             match_service.create_match(db, match)
 
 
-# def complete_the_group_stage(db: Session, league_id: int):
-#     n = match_service.get_count_unplayed_group_matches(db, league_id)
-#     league = get_league_by_id(db, league_id)
-#
-#     if n != 0:
-#         raise HTTPException(status_code=400, detail=f"{n} more matches have not been played in the group stage")
-#
-#     groups = group_service.get_all_groups(db, league_id)
-#     n = len(groups) // league.n_groups
-#     if n > 3:
-#         n = 3
-#
-#     types_of_playoff = ['gold', 'silver', 'bronze']
-#     for i in range(n):
-#         playoff_player_ids = []
-#         for j in range(0, len(groups), 4):
-#             playoff_player_ids.append(groups[j+i].player_id)
-#         for p in range(0, len(playoff_player_ids), 2):
-#             data = match_dto.MatchCreate(
-#                 player1_id=playoff_player_ids[p],
-#                 player2_id=playoff_player_ids[p+1],
-#             )
+def complete_the_group_stage(db: Session, league_id: int):
+    n = match_service.get_count_unplayed_group_matches(db, league_id)
+    league = get_league_by_id(db, league_id)
+
+    if n != 0:
+        raise HTTPException(status_code=400, detail=f"{n} more matches have not been played in the group stage")
+
+    groups = group_service.get_all_groups(db, league_id)
+    parse_group = {}
+    for i in range(league.n_groups):
+        parse_group[LETTERS[i]] = []
+        for g in groups:
+            if g["group_name"] == LETTERS[i]:
+                parse_group[LETTERS[i]].append(g)
+            else:
+                continue
+

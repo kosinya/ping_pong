@@ -1,8 +1,8 @@
+import itertools
 from sqlalchemy import text
-from starlette.responses import JSONResponse
 
 from models.group import Group
-from models.player import Player
+from models.match import Match
 from dto import group
 from database import Session
 
@@ -41,10 +41,48 @@ def get_all_groups(db: Session, l_id: int):
                 "id": r[0],
                 "player_id": r[1],
                 "score": r[2],
-                "group_name": r[3],
-                "league_id": r[4],
-                "surname": r[5],
-                "name": r[6],
-                "patronymic": r[7]
+                "place": r[3],
+                "group_name": r[4],
+                "league_id": r[5],
+                "surname": r[6],
+                "name": r[7],
+                "patronymic": r[8]
             })
-    return JSONResponse(content=data, status_code=200)
+    return data
+
+
+def updating_the_results(db: Session, league_id: int, group_name: str):
+    g = db.query(Group).filter_by(league_id=league_id, group_name=group_name).all()
+    ranked = rank_players(g, 1)
+
+    ranked_players = {}
+    for player in ranked:
+        if player.place not in ranked_players:
+            ranked_players[player.place] = []
+        ranked_players[player.place].append(player)
+
+    for rank, players_in_rank in ranked_players.items():
+        ids = []
+        if len(players_in_rank) >= 1:
+            for player in players_in_rank:
+                ids.append(player.player_id)
+        print(ids)
+
+    db.add_all(ranked)
+    db.commit()
+    return ranked
+
+
+def rank_players(players, r):
+    players.sort(key=lambda x: x.score, reverse=True)
+
+    current_rank = r
+    previous_score = players[0].score
+
+    for i, player in enumerate(players):
+        if player.score != previous_score:
+            current_rank = current_rank + 1
+        previous_score = player.score
+        player.place = current_rank
+
+    return players

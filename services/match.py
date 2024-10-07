@@ -2,6 +2,7 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy import text
 from starlette.responses import JSONResponse
 
+from services import group as GroupService
 from database import Session
 from models.match import Match
 from models.group import Group
@@ -93,5 +94,7 @@ def update_match_result(db: Session, match_id: int, winner_id: int, score: str):
         except Exception as e:
             print(e)
             db.rollback()
+
+    GroupService.updating_the_results(db, m.league_id, m.group_name)
 
     return m

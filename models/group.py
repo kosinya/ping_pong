@@ -11,5 +11,6 @@ class Group(Base):
     id = Column(Integer, primary_key=True)
     player_id = Column(Integer, ForeignKey(Player.player_id))
     score = Column(Integer)
+    place = Column(Integer, default=1)
     group_name = Column(String, index=True)
     league_id = Column(Integer, ForeignKey(League.league_id, ondelete='CASCADE'))

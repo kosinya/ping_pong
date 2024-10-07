@@ -13,3 +13,6 @@ class League(Base):
     n_groups = Column(Integer, nullable=False)
     tournament_id = Column(Integer, ForeignKey(Tournament.tournament_id, ondelete='CASCADE'))
     players = Column(String, nullable=False, default="")
+
+    groups = relationship("Group", cascade="all, delete")
+    matches = relationship("Match", cascade="all, delete")

@@ -42,3 +42,8 @@ async def delete_player(db: Session = Depends(get_connection), l_id: str = None,
 @router.post('/{l_id}/draw', tags=['league'])
 async def draw(db: Session = Depends(get_connection), l_id: str = None):
     return league.draw(db, int(l_id))
+
+
+@router.post('/{l_id}/create_playoff', tags=['league'])
+async def create_playoff(db: Session = Depends(get_connection), l_id: str = None):
+    return league.complete_the_group_stage(db, int(l_id))
