@@ -3,9 +3,9 @@ from typing import Literal
 
 
 class PlayoffBase(BaseModel):
-    name: Literal['Gold', 'Silver', 'Bronze'] = 'Gold'
-    start_stage: Literal['1/4', '1/2', 'Финал'] = '1/8'
-    current_stage: Literal['1/4', '1/2', 'Финал'] = '1/8'
+    name: Literal['Золотой', 'Серебрянный', 'Бронзовый'] = 'Золотой'
+    start_stage: Literal['1/4', '1/2', 'Финал'] = '1/4'
+    current_stage: Literal['1/4', '1/2', 'Финал'] = '1/4'
     league_id: int
 
 

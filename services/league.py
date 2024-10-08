@@ -10,8 +10,10 @@ from models.group import Group
 from dto import league as league_dto
 from dto import group as group_dto
 from dto import match as match_dto
+from dto import playoff as playoff_dto
 from . import group as group_service
 from . import match as match_service
+from . import playoff as playoff_service
 
 LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -194,3 +196,50 @@ def complete_the_group_stage(db: Session, league_id: int):
         elif g["place"] == 3:
             parse_by_place[2].append(g["player_id"])
 
+    # Создание плей-офф
+    playoff_types = ["Золотой", "Серебрянный", "Бронзовый"]
+    for i, t in enumerate(playoff_types):
+        if len(parse_by_place[i]) > 0:
+            new_playoff = playoff_dto.PlayoffCreate(
+                name=t,
+                start_stage=playoff_stage(parse_by_place[i]),
+                current_stage=playoff_stage(parse_by_place[i]),
+                league_id=league_id
+            )
+            playoff_service.create_playoff(db, new_playoff)
+
+    playoffs = playoff_service.get_all_playoffs(db, league_id)
+
+    for i in range(len(playoffs)):
+        num_players = len(parse_by_place[i])
+
+        for j in range(0, num_players, 4):
+            new_match = match_dto.MatchCreate(
+                player1_id=parse_by_place[i][j],
+                player2_id=parse_by_place[i][j+2],
+                type=playoffs[i].current_stage,
+                score="0-0",
+                invoice_by_batch="0-0 0-0 0-0",
+                playoff_id=playoffs[i].playoff_id,
+                league_id=league_id,
+            )
+            match_service.create_match(db, new_match)
+            new_match.player1_id = parse_by_place[i][j+1]
+            new_match.player2_id = parse_by_place[i][j+3]
+            match_service.create_match(db, new_match)
+    return "success"
+
+
+def playoff_stage(player_list):
+    num_teams = len(player_list)
+
+    if num_teams == 2:
+        return "Финал"
+    elif num_teams == 4:
+        return "1/2"
+    elif num_teams == 8:
+        return "1/4"
+    elif num_teams == 16:
+        return "1/6"
+    else:
+        return "Unknown stage"

@@ -8,7 +8,7 @@ def create_playoff(db: Session, data: playoff.PlayoffCreate):
         name=data.name,
         start_stage=data.start_stage,
         current_stage=data.current_stage,
-        league_id = data.league_id
+        league_id=data.league_id
     )
 
     try:
