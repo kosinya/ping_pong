@@ -227,6 +227,23 @@ def complete_the_group_stage(db: Session, league_id: int):
             new_match.player1_id = parse_by_place[i][j+1]
             new_match.player2_id = parse_by_place[i][j+3]
             match_service.create_match(db, new_match)
+
+        n_matches = {'Финал': 1, '1/2': 2, '1/4': 4, '1/8': 8}
+        for key, val in n_matches.items():
+            if key == playoffs[i].current_stage:
+                break
+            for k in range(val):
+                new_match = match_dto.MatchCreate(
+                    player1_id=-1,
+                    player2_id=-1,
+                    type=key,
+                    score="0-0",
+                    invoice_by_batch="0-0 0-0 0-0",
+                    playoff_id=playoffs[i].playoff_id,
+                    league_id=league_id,
+                )
+                match_service.create_match(db, new_match)
+
     return "success"
 
 

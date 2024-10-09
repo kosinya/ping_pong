@@ -29,48 +29,44 @@ def get_all_playoffs(db: Session, league_id: int):
 
 def get_the_grid(db, playoff_id: int, stage):
     matches = db.query(Match).filter_by(playoff_id=playoff_id).all()
-    return build_bracket(matches, stage)
+    return build_tree(matches)
 
 
-def build_bracket(matches, stage="Финал"):
-    if not matches:
-        return None
+def build_tree(matches):
+    tree = {}
 
-    stage_matches = [match for match in matches if match.type == stage]
-
-    # Create a dictionary to store the bracket tree
-    bracket = {}
-
-    # Iterate over the stage matches
-    for match in stage_matches:
-        id = match.match_id,
-        player1_id = match.player1_id,
-        player2_id = match.player2_id,
-        score = match.score
-
-        # Create a new match node
-        match_node = {
-            'id': id,
-            'player1_id': player1_id,
-            'player2_id': player2_id,
-            'score': score
-        }
-
-        # Recursively build the children nodes
-        if stage != 'Финал':
-            next_stage = get_next_stage(stage)
-            child_matches = [m for m in matches if
-                             m.type == next_stage and (m.winner_id == match_node["player1_id"] or
-                                                       m.winner_id == match_node["player2_id"])]
-            if child_matches:
-                match_node['children'] = [build_bracket([child_match], next_stage, key) for child_match in
-                                          child_matches]
-
-        bracket[key] = match_node
-
-    return bracket
+    final_match = max(matches, key=lambda x: x.type)
+    if final_match:
+        tree = build_match_tree(final_match, matches, set())
+    return tree
 
 
-def get_next_stage(stage):
-    stages = ['Финал', '1/2', '1/4', '1/8']
-    return stages[stages.index(stage) - 1]
+def build_match_tree(match, matches, processed_matches):
+    match_dict = {
+        "player1_id": match.player1_id,
+        "player2_id": match.player2_id,
+        "score": match.score,
+        "winner_id": match.winner_id,
+        "match_id": match.match_id,
+        "type": match.type,
+        "children": []
+    }
+
+    types = ['Финал', '1/2', '1/4', '1/8']
+    current_stage_index = types.index(match_dict["type"])
+    dependent_matches = []
+
+    if current_stage_index < len(types):
+        processed_matches.add(match.match_id)
+        if match_dict["player1_id"] != -1:
+            dependent_matches = [m for m in matches
+                                 if types.index(m.type) == current_stage_index+1 and m.match_id not in processed_matches
+                                 and (m.winner_id == match_dict["player1_id"] or m.winner_id == match_dict["player2_id"])]
+        else:
+            dependent_matches = [m for m in matches
+                                 if types.index(m.type) == current_stage_index + 1
+                                 and m.match_id not in processed_matches]
+    for dependent_match in dependent_matches[:2]:
+        match_dict["children"].append(build_match_tree(dependent_match, matches, processed_matches))
+
+    return match_dict
