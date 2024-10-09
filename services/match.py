@@ -65,7 +65,33 @@ def get_group_matches(db: Session, league_id: int):
 
 
 def get_matches_by_playoff(db: Session, playoff_id: int):
-    return db.query(Match).filter_by(playoff_id=playoff_id).all()
+    query = text(f"""SELECT m.*, p1.surname AS 'player1_surname', p1.name AS 'player1_name',
+                         p2.surname AS 'player2_surname', p2.name AS 'player2_name'
+                         FROM matches m
+                         LEFT JOIN players p1 ON m.player1_id = p1.player_id
+                         LEFT JOIN players p2 ON m.player2_id = p2.player_id
+                         WHERE m.playoff_id = {playoff_id};
+        """)
+    results = db.execute(query).fetchall()
+    data = []
+    if results:
+        for result in results:
+            data.append({
+                "match_id": result[0],
+                "player1_id": result[1],
+                "player2_id": result[2],
+                "type": result[3],
+                "score": result[4],
+                "invoice_by_batch": result[5],
+                "playoff_id": result[7],
+                "league_id": result[8],
+                "winner_id": result[9],
+                "player1_surname": result[10],
+                "player1_name": result[11],
+                "player2_surname": result[12],
+                "player2_name": result[13]
+            })
+    return data
 
 
 def get_count_unplayed_group_matches(db: Session, league_id: int):

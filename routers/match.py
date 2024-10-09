@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from starlette.responses import JSONResponse
 
 from services import match
 from database import get_connection
@@ -14,7 +15,8 @@ def get_all_group_matches(db: Session = Depends(get_connection), league_id: str 
 
 @router.get('/', tags=['match'])
 def get_matches_by_playoff(db: Session = Depends(get_connection), playoff_id: str = None):
-    return match.get_matches_by_playoff(db, int(playoff_id))
+    data = match.get_matches_by_playoff(db, int(playoff_id))
+    return JSONResponse(content=data, status_code=200)
 
 
 @router.put('/', tags=['match'])
