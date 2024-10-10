@@ -37,12 +37,13 @@ def build_tree(matches):
 
     final_match = max(matches, key=lambda x: x["type"])
     if final_match:
-        tree = build_match_tree(final_match, matches, set())
+        tree = build_match_tree(final_match, matches, set(), "0")
     return tree
 
 
-def build_match_tree(match, matches, processed_matches):
+def build_match_tree(match, matches, processed_matches, key):
     match_dict = match
+    match_dict["key"] = key
     match_dict["children"] = []
 
     types = ['Финал', '1/2', '1/4', '1/8']
@@ -61,7 +62,7 @@ def build_match_tree(match, matches, processed_matches):
             dependent_matches = [m for m in matches
                                  if types.index(m["type"]) == current_stage_index + 1
                                  and m["match_id"] not in processed_matches]
-    for dependent_match in dependent_matches[:2]:
-        match_dict["children"].append(build_match_tree(dependent_match, matches, processed_matches))
+    for i, dependent_match in enumerate(dependent_matches[:2]):
+        match_dict["children"].append(build_match_tree(dependent_match, matches, processed_matches, key+"_"+str(i)))
 
     return match_dict
