@@ -24,11 +24,6 @@ async def delete_league(db: Session = Depends(get_connection), l_id: str = None)
     return league.delete_league(db, int(l_id))
 
 
-@router.put("/", tags=['league'])
-async def update_league(db: Session = Depends(get_connection), l_id: str = None, data: dto.League = None):
-    return league.update_league(db, int(l_id), data)
-
-
 @router.put("/{l_id}/players", tags=['league'])
 async def add_players(db: Session = Depends(get_connection), l_id: str = None, player_ids: str = None):
     return league.add_players(db, int(l_id), player_ids)

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship, backref
 
 from database import Base
@@ -13,6 +13,6 @@ class League(Base):
     n_groups = Column(Integer, nullable=False)
     tournament_id = Column(Integer, ForeignKey(Tournament.tournament_id, ondelete='CASCADE'))
     players = Column(String, nullable=False, default="")
-
+    draw_completed = Column(Boolean, nullable=False, default=False)
     groups = relationship("Group", cascade="all, delete")
     matches = relationship("Match", cascade="all, delete")

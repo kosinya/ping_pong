@@ -55,10 +55,9 @@ def delete_league(db: Session, league_id: int):
 
 
 # Обновить лигу по id
-def update_league(db: Session, league_id: int, data: league_dto.League):
+def update_league(db: Session, league_id: int, draw_completed: bool):
     league = db.query(League).filter_by(league_id=league_id).first()
-    league.name = data.name
-    league.n_groups = data.n_groups
+    league.draw_completed = draw_completed
 
     try:
         db.add(league)
@@ -130,7 +129,10 @@ def delete_player(db: Session, league_id: int, player_id: int):
 # Провести жеребьевку
 def draw(db: Session, league_id: int):
     league = db.query(League).filter_by(league_id=league_id).first()
-    ids = [int(i) for i in league.players.split(',')]
+    if league.players != "":
+        ids = [int(i) for i in league.players.split(',')]
+    else:
+        raise HTTPException(status_code=400, detail=f'The list of players is empty')
 
     if len(ids) % league.n_groups != 0:
         raise HTTPException(status_code=400, detail=f'The number of players must be a multiple of 4')
@@ -157,7 +159,7 @@ def draw(db: Session, league_id: int):
 
     groups = db.query(Group).filter_by(league_id=league_id).all()
     create_group_matches(db, league.league_id, league.n_groups, groups)
-
+    update_league(db, league.league_id, True)
     return "success"
 
 
